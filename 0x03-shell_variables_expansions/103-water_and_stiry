@@ -1,2 +1,20 @@
 #!/bin/bash
-printf "%o\n" $(( $((5#$(echo $WATER | tr water 01234))) + $((5#$(echo $STIR | tr stir. 01234))) )) | tr 01234567 bestchol
+# Converts WATER (base water) and STIR (base stir) to base bestchol
+
+# Replace the letters of 'water' and 'stir' bases with digits 0-4, then sum them.
+# Finally, convert the result to base 'bestchol'
+
+# Convert WATER (base water) -> decimal
+water_base=$(echo "$WATER" | tr 'water' '01234')
+# Convert STIR (base stir) -> decimal
+stir_base=$(echo "$STIR" | tr 'stir.' '01234')
+
+# Add them using bc (in base 5)
+sum=$(echo "ibase=5; obase=10; $water_base + $stir_base" | bc)
+
+# Convert the decimal result to base 'bestchol' (base 8)
+# base bestchol = digits 'bestchol' → 0–7
+result=$(echo "obase=8; $sum" | bc | tr '01234567' 'bestchol')
+
+# Output
+echo "$result"
